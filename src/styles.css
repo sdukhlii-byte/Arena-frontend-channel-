@@ -255,3 +255,7 @@
   font-size: 10px;
   font-weight: 700;
 }
+
+/* Hide scrollbar on the Feed market strip (visual only; scroll still works) */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
