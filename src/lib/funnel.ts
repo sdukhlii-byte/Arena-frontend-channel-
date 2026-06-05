@@ -1,5 +1,5 @@
 // Single integration point with the backend. No component fetches directly.
-import { API_BASE, BOT_USERNAME, BRAND } from "@/config";
+import { API_BASE, BOT_USERNAME, BRAND, CHANNEL_HANDLE } from "@/config";
 
 export type EventName = "cta_view" | "cta_tap" | "channel_open";
 
@@ -145,7 +145,9 @@ export const funnel = {
   openJoinViaBot(): void {
     void funnel.event("channel_open");
     const tg = getTG();
-    const channelUrl = _cfg?.cta?.channel_url || BRAND.cta.channelUrl || "";
+    // Канал: рантайм /api/config → build-time env (VITE_CHANNEL_HANDLE) → brand.config.
+    const handleUrl = CHANNEL_HANDLE ? `https://t.me/${CHANNEL_HANDLE}` : "";
+    const channelUrl = _cfg?.cta?.channel_url || handleUrl || BRAND.cta.channelUrl || "";
     // 1) основной путь — открыть сам канал (то, что ждёт пользователь)
     if (channelUrl && !channelUrl.includes("your_channel")) {
       if (tg?.openTelegramLink) tg.openTelegramLink(channelUrl);
