@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { BRAND } from "@/config";
 import { useTelegram } from "@/lib/telegram";
@@ -86,6 +87,30 @@ function App() {
             onJoin={f.startJoin}
           />
         </div>
+
+        <footer
+          className="mt-8 pt-4 border-t text-center"
+          style={{ borderColor: "var(--color-border)" }}
+        >
+          <p className="text-[10px] leading-relaxed" style={{ color: BRAND.theme.muted }}>
+            {LANG === "ru"
+              ? "18+ · Только информация, не финансовый/беттинг-совет"
+              : LANG === "es"
+                ? "18+ · Solo información, no es asesoramiento financiero/de apuestas"
+                : "18+ · Informational only, not financial/betting advice"}
+          </p>
+          <Link
+            to="/privacy"
+            className="mt-1 inline-block text-[11px] font-display tracking-widest underline underline-offset-2"
+            style={{ color: BRAND.theme.accent }}
+          >
+            {LANG === "ru"
+              ? "Политика конфиденциальности"
+              : LANG === "es"
+                ? "Política de Privacidad"
+                : "Privacy Policy"}
+          </Link>
+        </footer>
       </main>
       <StickyCTA hidden={tab === "play" || !wallVisible} onJoin={f.startJoin} />
       <BottomNav active={tab} onChange={setTab} />

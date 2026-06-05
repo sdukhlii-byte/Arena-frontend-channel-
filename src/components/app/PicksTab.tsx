@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { BRAND } from "@/config";
 import { COPY } from "@/copy";
-import { Card, IOSButton, Skeleton } from "./ui";
-import { FeedTab } from "./FeedTab";
+import { Card, Empty, IOSButton, Skeleton } from "./ui";
 import type { BackendPick, BackendGate } from "@/lib/funnel";
 import { funnel } from "@/lib/funnel";
 import { haptic } from "@/lib/telegram";
@@ -43,9 +42,11 @@ export function PicksTab({ picks, gate, member, loading, source, onJoin }: Props
   return (
     <div className="space-y-3 tab-fade">
       {list.length === 0 ? (
-        // No analyst picks right now → keep the surface alive with the live feed
-        // (crypto / casino / esports). When real picks arrive, they take over.
-        <FeedTab />
+        <Empty
+          icon="🎯"
+          title={source === "no_matches" ? COPY.picks.noMatches : COPY.picks.loading}
+          hint={COPY.picks.scouting(BRAND.character.name)}
+        />
       ) : (
         list.map((p, i) => (
           <PickCard
