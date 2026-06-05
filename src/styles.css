@@ -1,0 +1,257 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap");
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-neon: var(--neon);
+  --color-neon-alt: var(--neon-alt);
+  --font-display: "Orbitron", ui-sans-serif, system-ui, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Inter", "Segoe UI", Roboto, sans-serif;
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: #0a0c10;
+  --foreground: #e6edf3;
+  --card: #0d1018;
+  --card-foreground: #e6edf3;
+  --popover: #111520;
+  --popover-foreground: #e6edf3;
+  --primary: #00ff88;
+  --primary-foreground: #001b0e;
+  --secondary: #111520;
+  --secondary-foreground: #e6edf3;
+  --muted: #111520;
+  --muted-foreground: #8892a6;
+  --accent: #00d4ff;
+  --accent-foreground: #001a22;
+  --destructive: #ff4655;
+  --destructive-foreground: #ffffff;
+  --border: #1c2230;
+  --input: #1c2230;
+  --ring: #00ff88;
+  --surface: #0d1018;
+  --surface-2: #111520;
+  --neon: #00ff88;
+  --neon-alt: #00d4ff;
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-top: env(safe-area-inset-top);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+    -webkit-tap-highlight-color: transparent;
+  }
+  html, body, #root {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  html {
+    overscroll-behavior-y: none;
+  }
+  body {
+    min-height: 100dvh;
+    overscroll-behavior-y: contain;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  input, textarea {
+    -webkit-user-select: auto;
+    user-select: auto;
+  }
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  button {
+    font-family: inherit;
+    touch-action: manipulation;
+  }
+}
+
+/* iOS-native press feedback */
+.press {
+  transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 120ms ease;
+  will-change: transform;
+}
+.press:active {
+  transform: scale(0.97);
+  opacity: 0.92;
+}
+
+/* Tap target floor */
+.tap-44 { min-height: 44px; }
+
+/* Subtle scanline overlay */
+.scanlines::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.015) 0px,
+    rgba(255, 255, 255, 0.015) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  z-index: 100;
+  mix-blend-mode: overlay;
+}
+
+.neon-text {
+  text-shadow: 0 0 8px currentColor, 0 0 16px currentColor;
+}
+.neon-border {
+  box-shadow: 0 0 0 1px var(--color-border), 0 0 14px -2px var(--color-neon);
+}
+.neon-glow {
+  box-shadow: 0 0 20px -4px var(--color-neon), 0 0 40px -10px var(--color-neon);
+}
+
+@keyframes signal-bar {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+.signal-bar {
+  display: inline-block;
+  width: 3px;
+  background: var(--color-neon);
+  border-radius: 1px;
+  transform-origin: bottom;
+  animation: signal-bar 1.2s ease-in-out infinite;
+  box-shadow: 0 0 6px var(--color-neon);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--color-destructive); }
+  50% { opacity: 0.4; box-shadow: 0 0 2px var(--color-destructive); }
+}
+.live-dot {
+  width: 8px; height: 8px; border-radius: 999px;
+  background: var(--color-destructive);
+  animation: pulse-dot 1.2s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tab-fade { animation: fade-in-up 0.28s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.slide-up { animation: slide-up 0.32s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+@keyframes sticky-pop {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.sticky-pop { animation: sticky-pop 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(0, 255, 136, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* iOS segmented control */
+.segmented {
+  display: inline-flex;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+  width: 100%;
+}
+.segmented > button {
+  flex: 1;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: 8px;
+  color: var(--color-muted-foreground);
+  transition: background 180ms ease, color 180ms ease;
+}
+.segmented > button[data-on="true"] {
+  background: color-mix(in oklab, var(--color-neon) 18%, transparent);
+  color: var(--color-foreground);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-neon) 35%, transparent);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(96px + env(safe-area-inset-bottom));
+  z-index: 60;
+  background: color-mix(in oklab, var(--color-background) 92%, transparent);
+  border: 1px solid var(--color-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--color-foreground);
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 8px 28px -10px rgba(0,0,0,0.6);
+  animation: sticky-pop 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Confidence ring */
+.ring-conf {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 700;
+}

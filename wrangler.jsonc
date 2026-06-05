@@ -1,0 +1,22 @@
+{
+  // Собственный конфиг воркера. Его наличие отключает авто-настройку Cloudflare
+  // («Configuring project for TanStack Start»), которая ломала деплой, пытаясь
+  // дописать @cloudflare/vite-plugin в vite.config (там нет массива plugins —
+  // всё внутри Lovable-обёртки). Здесь мы просто деплоим уже собранный nitro-вывод.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "signal-sports-bot",
+  "compatibility_date": "2026-06-04",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Точка входа воркера — серверный бандл, который nitro кладёт в dist/server/.
+  // (в логе сборки: "dist/server/server.js  3.32 kB")
+  "main": "dist/server/server.js",
+
+  // Статика клиента (в логе: Output Directory: dist/client).
+  "assets": {
+    "directory": "dist/client",
+    "binding": "ASSETS"
+  },
+
+  "observability": { "enabled": true }
+}
