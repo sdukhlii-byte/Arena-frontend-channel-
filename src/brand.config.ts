@@ -138,7 +138,7 @@ export const BRANDS: Record<string, Brand> = {
         es: "Análisis completos, señales tempranas y resultados — en el canal.",
       },
     },
-    privacyUrl: "https://metaarena.s26636274.workers.dev/privacy",
+    privacyUrl: "https://arenafronend.s26636274.workers.dev/privacy",
   },
   goalcast: {
     id: "goalcast",
