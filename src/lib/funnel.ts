@@ -36,6 +36,37 @@ export interface MembershipResponse {
   channel: string;
   configured: boolean;
 }
+export type NewsCategory = "all" | "crypto" | "casino" | "esports";
+
+export interface NewsItem {
+  id: string;
+  title: string;
+  url: string;
+  source: string;
+  category: Exclude<NewsCategory, "all">;
+  published_at: string; // ISO
+  image: string | null;
+  summary: string;
+}
+export interface NewsCoin {
+  symbol: string;
+  name?: string;
+  price: number | null;
+  change_24h: number | null;
+  image?: string | null;
+}
+export interface NewsMarket {
+  coins: NewsCoin[];
+  fng: { value: number; label: string } | null;
+  mcap_change_24h: number | null;
+  btc_dominance: number | null;
+}
+export interface NewsResponse {
+  items: NewsItem[];
+  market: NewsMarket;
+  updated_at: string;
+}
+
 export interface BackendMatch {
   game: string;
   team1: string;
@@ -139,6 +170,11 @@ export const funnel = {
 
   upcoming(): Promise<{ matches: BackendMatch[] }> {
     return getJSON(`/api/upcoming`);
+  },
+
+  /** Авто-лента: крипто/казино/киберспорт новости + крипто-рынок. Не гейтится. */
+  news(category: NewsCategory = "all", limit = 40): Promise<NewsResponse> {
+    return getJSON<NewsResponse>(`/api/news?category=${category}&limit=${limit}`);
   },
 
   /** Открывает канал напрямую (рантайм-конфиг → build-time fallback). */
