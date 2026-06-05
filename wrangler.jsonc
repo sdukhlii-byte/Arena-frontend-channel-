@@ -4,7 +4,7 @@
   // дописать @cloudflare/vite-plugin в vite.config (там нет массива plugins —
   // всё внутри Lovable-обёртки). Здесь мы просто деплоим уже собранный nitro-вывод.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "signal-sports-bot",
+  "name": "arenafronend",
   "compatibility_date": "2026-06-04",
   "compatibility_flags": ["nodejs_compat"],
 
