@@ -1,5 +1,5 @@
 // Single integration point with the backend. No component fetches directly.
-import { API_BASE, BOT_USERNAME, BRAND, CHANNEL_HANDLE } from "@/config";
+import { API_BASE, BOT_USERNAME } from "@/config";
 
 export type EventName = "cta_view" | "cta_tap" | "channel_open";
 
@@ -177,20 +177,25 @@ export const funnel = {
     return getJSON<NewsResponse>(`/api/news?category=${category}&limit=${limit}`);
   },
 
-  /** Открывает канал напрямую (рантайм-конфиг → build-time fallback). */
-  openJoinViaBot(): void {
+  /**
+   * Открывает канал. Источник ссылки — ТОЛЬКО рантайм:
+   * проп из стейта (state.channel.url) → кэш /api/config. Без build-time
+   * реконструкции t.me/<handle> — она давала старый/неверный линк (особенно
+   * для инвайт-ссылок t.me/+hash, которые из handle не собрать).
+   * Если рантайм-канал ещё не подгрузился — уходим в deep-link бота,
+   * который знает реальный канал, а не угадываем URL.
+   */
+  openJoinViaBot(runtimeChannelUrl?: string): void {
     void funnel.event("channel_open");
     const tg = getTG();
-    // Канал: рантайм /api/config → build-time env (VITE_CHANNEL_HANDLE) → brand.config.
-    const handleUrl = CHANNEL_HANDLE ? `https://t.me/${CHANNEL_HANDLE}` : "";
-    const channelUrl = _cfg?.cta?.channel_url || handleUrl || BRAND.cta.channelUrl || "";
+    const channelUrl = runtimeChannelUrl || _cfg?.cta?.channel_url || "";
     // 1) основной путь — открыть сам канал (то, что ждёт пользователь)
     if (channelUrl && !channelUrl.includes("your_channel")) {
       if (tg?.openTelegramLink) tg.openTelegramLink(channelUrl);
       else if (typeof window !== "undefined") window.open(channelUrl, "_blank", "noopener,noreferrer");
       return;
     }
-    // 2) fallback — deep-link в бота с верификацией подписки
+    // 2) fallback — deep-link в бота с верификацией подписки (бот знает канал)
     const bot = (_cfg?.cta?.bot_username || BOT_USERNAME).replace(/^@/, "");
     const url = `https://t.me/${bot}?start=join`;
     try {
