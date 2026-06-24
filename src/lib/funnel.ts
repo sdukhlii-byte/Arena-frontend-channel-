@@ -189,20 +189,26 @@ export const funnel = {
     void funnel.event("channel_open");
     const tg = getTG();
     const channelUrl = runtimeChannelUrl || _cfg?.cta?.channel_url || "";
-    // 1) основной путь — открыть сам канал (то, что ждёт пользователь)
-    if (channelUrl && !channelUrl.includes("your_channel")) {
-      if (tg?.openTelegramLink) tg.openTelegramLink(channelUrl);
-      else if (typeof window !== "undefined") window.open(channelUrl, "_blank", "noopener,noreferrer");
-      return;
-    }
-    // 2) fallback — deep-link в бота с верификацией подписки (бот знает канал)
     const bot = (_cfg?.cta?.bot_username || BOT_USERNAME).replace(/^@/, "");
-    const url = `https://t.me/${bot}?start=join`;
+    const botJoin = bot ? `https://t.me/${bot}?start=join` : "";
+
+    // Приватный инвайт (t.me/+hash, /joinchat) вебвью часто НЕ открывает через
+    // openTelegramLink. Ведём в бота: он админ канала, шлёт нативную кнопку входа
+    // + «✅ Я подписался» с верификацией. Публичный t.me/<username> открываем прямо.
+    const isInvite = /\/(\+|joinchat\/)/.test(channelUrl);
+    const target =
+      isInvite && botJoin
+        ? botJoin
+        : channelUrl && !channelUrl.includes("your_channel")
+          ? channelUrl
+          : botJoin || channelUrl;
+
+    if (!target) return;
     try {
-      if (tg?.openTelegramLink) tg.openTelegramLink(url);
-      else if (typeof window !== "undefined") window.open(url, "_blank", "noopener,noreferrer");
+      if (tg?.openTelegramLink) tg.openTelegramLink(target);
+      else if (typeof window !== "undefined") window.open(target, "_blank", "noopener,noreferrer");
     } catch {
-      if (typeof window !== "undefined") window.open(url, "_blank", "noopener,noreferrer");
+      if (typeof window !== "undefined") window.open(target, "_blank", "noopener,noreferrer");
     }
   },
 };
