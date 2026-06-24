@@ -78,8 +78,9 @@ export function useFunnel(lang: "en" | "ru" | "es" = "en") {
   }, [refresh, state.gate, state.member]);
 
   const startJoin = useCallback(() => {
-    funnel.openJoinViaBot();
-  }, []);
+    // рантайм-канал из бэка (/api/config) → не запечённый build-time линк
+    funnel.openJoinViaBot(state.channel.url);
+  }, [state.channel.url]);
 
   // Initial load
   useEffect(() => {
@@ -97,12 +98,13 @@ export function useFunnel(lang: "en" | "ru" | "es" = "en") {
     });
   }, [refresh]);
 
-  // Re-check membership when user returns from bot/channel.
+  // Re-check membership on focus/return. ВАЖНО: перепроверяем ВСЕГДА, когда гейт
+  // включён — без раннего выхода при state.member. Иначе членство — защёлка только
+  // в одну сторону (false→true), и отписка (true→false) никогда не ловится.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const onFocus = () => {
       if (!state.gate?.enabled) return;
-      if (state.member) return;
       void checkMembership();
     };
     const onVis = () => {
@@ -114,7 +116,7 @@ export function useFunnel(lang: "en" | "ru" | "es" = "en") {
       window.removeEventListener("focus", onFocus);
       document.removeEventListener("visibilitychange", onVis);
     };
-  }, [checkMembership, state.gate?.enabled, state.member]);
+  }, [checkMembership, state.gate?.enabled]);
 
   return {
     ...state,
